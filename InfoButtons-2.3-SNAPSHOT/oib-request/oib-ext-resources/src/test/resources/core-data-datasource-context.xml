@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="
+	http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context.xsd
+	http://www.springframework.org/schema/tx
+	http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+	<!-- =========================================== -->
+	<!-- Properties files -->
+	<!-- =========================================== -->
+
+	<!-- Property file locations: suppressed here because it might override 
+		the main context file's resources. The main context is responsible for defining 
+		them. -->
+
+	<!-- =========================================== -->
+	<!-- Annotation configuration -->
+	<!-- =========================================== -->
+
+	<context:annotation-config />
+
+	<!-- =========================================== -->
+	<!-- Data Layer -->
+	<!-- =========================================== -->
+
+	<!-- Data source: reads a properties file and injects them into a DBCP DS 
+		First datasource for Concept and Subset <property name="driverClass"><value>com.mysql.jdbc.Driver</value></property> 
+		<property name="jdbcUrl"><value>jdbc:mysql://mysql.chpc.utah.edu:3306/prodoib</value></property> 
+		<property name="user"><value>valuesetdb</value></property> <property name="password"><value>ctxRchgiP</value></property> -->
+	<bean id="dataSource" class="org.apache.tomcat.jdbc.pool.DataSource">
+		<property name="driverClassName">
+			<value>${datasource1.driver}</value>
+		</property>
+		<property name="url">
+			<value>${datasource1.url}</value>
+		</property>
+		<property name="username">
+			<value>${datasource1.user}</value>
+		</property>
+		<property name="password">
+			<value>${datasource1.password}</value>
+		</property>
+		<property name="testWhileIdle">
+			<value>true</value>
+		</property>
+	</bean>
+
+
+	<!-- Session factory -->
+	<!-- Session Factory for the first datasource -->
+	<bean id="sessionFactory" primary="true"
+		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+
+		<!-- Hibernate configuration properties -->
+		<property name="hibernateProperties">
+			<map>
+				<entry key="hibernate.show_sql" value="false"/>
+				<entry key="hibernate.default_schema" value="valueset_and_log" />
+				<entry key="hibernate.hbm2ddl.auto" value="validate" />
+				<entry key="hibernate.dialect" value="org.hibernate.dialect.MySQL5Dialect" />
+			</map>
+		</property>
+
+		<!-- Using improved naming strategy -->
+		<property name="namingStrategy">
+			<bean class="org.hibernate.cfg.DefaultNamingStrategy" />
+		</property>
+
+		<!-- Mapping annotated classes using search patterns -->
+		<property name="annotatedClasses">
+			<list>
+				<value><![CDATA[org.openinfobutton.subsetdb.domain.SubsetJson]]></value>
+				<value><![CDATA[org.openinfobutton.subsetdb.domain.Logs]]></value>
+
+			</list>
+		</property>
+	</bean>
+
+	<!-- =========================================== -->
+	<!-- Transaction management -->
+	<!-- =========================================== -->
+
+	<!-- Enable the configuration of transactional behavior based on annotations -->
+	<tx:annotation-driven />
+
+	<!-- a PlatformTransactionManager is still required -->
+	<bean id="transactionManager"
+		class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+	<bean id="logDao" class=" org.openinfobutton.subsetdb.service.LogsDaoImpl">
+	</bean>
+
+
+</beans>

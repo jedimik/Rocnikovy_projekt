@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<knowledgeResourceProfile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<header id="1">
+
+		<title>Micromedex</title>
+
+		<profileDescription>Comprehensive medication knowledge base.</profileDescription>
+
+		<versionControl publicationDate="2015-08-09T08:56:00"/>
+
+	</header>
+
+	<profileDefinition hl7KnowledgeResponseCompliant="false" hl7URLCompliant="true">
+		<authorizedOrganizations/>
+		<contexts>
+
+			<context name="Medication knowledge from order entry (OE) and medication list (MLREV). Provider only content" id="1">
+
+				<contextDefinition>
+
+					<patientGender match="false" search="true"/>
+
+					<task match="true" search="false">
+
+						<matchingDomain>
+
+							<enumeration includeDescendants="false">
+
+								<code codeSystem="2.16.840.1.113883.5.4" displayName="Medication Order entry" code="MEDOE"/>
+
+								<code codeSystem="2.16.840.1.113883.5.4" displayName="Medication list review" code="MLREV"/>
+
+							</enumeration>
+
+						</matchingDomain>
+
+					</task>
+					<performerKnowledgeUserType match="true" search="false">
+						<matchingDomain>
+							<enumeration includeDescendants="false">
+								<code codeSystem="2.16.840.1.113883.5.110" code="PROV"/>
+							</enumeration>
+						</matchingDomain>
+					</performerKnowledgeUserType>
+
+					<conceptOfInterest match="false" search="true"/>
+
+					<subTopics>
+
+						<subTopic linkName="Drug monograph"/>
+
+					</subTopics>
+
+				</contextDefinition>
+
+				<knowledgeRequestService>
+
+					<knowledgeRequestServiceLocation url="https://www.micromedexsolutions.com/infobutton/librarian/hl7v3?"/>
+
+				</knowledgeRequestService>
+
+			</context>
+
+		</contexts>
+
+	</profileDefinition>
+
+</knowledgeResourceProfile>
+

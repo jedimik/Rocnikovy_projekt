@@ -1,0 +1,84 @@
+<div ng-controller="ProfileFormCtrl">
+<style>
+   .persistentSave { position: fixed; bottom: 20px; right: 20px; }
+
+    .xmlView { position: fixed; bottom: 20px; left: 10px; }
+
+   .css-div {
+       cursor: pointer;
+       font-size: 21px;
+   }
+
+   .css-filled {
+       color: #5cb85c;
+   }
+
+   .css-checkbox {
+       display: none;
+       color: #333;
+   }
+
+   .glyphicon-minus {
+       display: none;
+   }
+
+   .css-checkbox:checked + .ng-binding .css-div .glyphicon-minus {
+       display: inline;
+   }
+   .css-checkbox:checked + .ng-binding .css-div .glyphicon-plus {
+       display: none;
+   }
+</style>
+    <div class="container">
+        <h2>Profile Editor</h2>
+        <form name="profileForm" class="form-horizontal" role="form" validate>
+            <div class="form-group" ng-hide="new">
+                <label for="id" class="col-sm-2 control-label">ID:</label>
+                <div class="col-sm-10">
+                    <input id="id" class="form-control" type="text" ng-model="profile.id"/>
+                    <!--<input id="id" class="form-control" type="text" ng-model="profile.id" readonly/>-->
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="name" class="col-sm-2 control-label">Name:</label>
+                <div class="col-sm-10">
+                    <input id="name" required class="form-control" type="text" ng-model="profile.name" required/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="name" class="col-sm-2 control-label">Logo URL:</label>
+                <div class="col-sm-10">
+                    <input id="name" class="form-control" type="text" ng-model="profile.imageUrl"/>
+                </div>
+            </div>
+            <div class="form-group" ng-hide="new">
+                <label for="published" class="col-sm-2 control-label">Published Date:</label>
+                <div class="col-sm-10">
+                    <input id="published" class="form-control" type="text" ng-model="profile.published | date:'medium'" disabled/>
+                </div>
+            </div>
+            <div class="form-group" ng-hide="new">
+                <label for="status" class="col-sm-2 control-label">Profile Status:</label>
+                <div class="col-sm-10">
+                    <select id="status" class="form-control" type="text" ng-model="profile.status">
+                        <option value="1">Active</option>
+                        <option value="2">Testing</option>
+                        <option value="3">Inactive</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <button type="submit" ng-click="profileForm.$valid && insert(profile)" class="btn btn-success" ng-show="new">CREATE</button>
+                    <!--                    <button ng-click="clearDb(profile)" class="btn btn-default">RESET DATABASE</button>-->
+                </div>
+            </div>
+        </form>
+        <form ng-hide="new" sf-schema="jsonProfileSchema" sf-form="jsonProfileForm" sf-model="jsonProfileModel" ng-submit="onJSONProfileSubmit(jsonProfileForm)"></form>
+        <button ng-click="openXML(profile.content)" class="btn btn-default xmlView">See XML</button>
+    </div>
+
+</div>
+
+
+

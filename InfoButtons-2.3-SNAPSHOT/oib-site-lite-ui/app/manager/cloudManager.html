@@ -1,0 +1,122 @@
+<div class="container" ng-controller="CloudProfileCtrl">
+<style>
+    .btn.active:enabled{
+        outline: thin dotted;
+        outline: 10px auto -webkit-focus-ring-color;
+        outline-offset: -2px;
+    }
+
+    .orange, .orange a {
+
+        color: #FFA500;
+    }
+</style>
+<script type="text/ng-template" id="confirm.html">
+    <div class="modal-body">
+        Profile Updated
+        <button class="btn btn-primary" ng-click="ok()">Ok</button>
+    </div>
+</script>
+
+<script type="text/ng-template" id="modalContent.html">
+    <div class="modal-header">
+        <h3 class="modal-title">Select Organization ID</h3>
+    </div>
+    <div class="modal-body">
+        <ul>
+            <li ng-repeat="item in items">
+                <input type="checkbox" checklist-model="selection.items" checklist-value="item">
+                {{item.orgName}}
+            </li>
+        </ul>
+    </div>
+    <div ng-hide="edit" class="modal-footer">
+        <button class="btn btn-primary" ng-click="ok()">Download</button>
+        <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+    </div>
+    <div ng-show="edit" class="modal-footer">
+        <button class="btn btn-primary" ng-click="ok()">Change</button>
+    </div>
+</script>
+
+
+<h3>Resource Store</h3>
+<hr/>
+    <div class="well" ng-repeat="localCloudProfile in localCloudProfiles | orderBy: '-published' | filter:needsUpdate()">
+        <div class="row">
+            <div class="col-md-3">
+                <!--Suggest adding logos/images for each profile - see next line -->
+                <!--<img src="{{localCloudProfile.image_url}}" alt="{{localCloudProfile.title}} logo" style="max-height: 80px; max-width: 200px;">-->
+                <a href="https://github.com/VHAINNOVATIONS/InfoButtons/blob/development/profilestore/{{localCloudProfile.name}}" target="_blank">
+                    <img src="{{localCloudProfile.imageUrl}}" logo" style="max-height: 40px; max-width: 100px;">
+                    <img src="http://www.openinfobutton.org/_/rsrc/1290202364539/home/project_logo.jpg" style="max-height: 40px; max-width: 100px;" ng-hide="localCloudProfile.imageUrl">
+                </a> <br>
+                <a href="https://github.com/VHAINNOVATIONS/InfoButtons/blob/development/profilestore/{{localCloudProfile.name}}" target="_blank" class="btn btn-link">{{localCloudProfile.name | limitTo: localCloudProfile.name.length - 4}}</a>
+            </div>
+            <div class="col-md-3" style="margin-left: 2em;">
+                <p>{{localCloudProfile.profileDescription}}</p>
+            </div>
+            <div class="col-md-3" style="margin-left: 2em;">
+                <p><br> {{localCloudProfile.published | date:'medium'}}</p>
+            </div>
+            <div class="">
+                <button ng-click="update(localCloudProfile)" class="btn btn-primary">Update</button>
+            </div>
+        </div>
+    </div>
+    <div class="well" ng-repeat="localCloudProfile in localCloudProfiles | orderBy: '-published' | filter:isUpdated()">
+        <div class="row">
+            <div class="col-md-3">
+                <!--Suggest adding logos/images for each profile - see next line -->
+                <!--<img src="{{localCloudProfile.image_url}}" alt="{{localCloudProfile.title}} logo" style="max-height: 80px; max-width: 200px;">-->
+                <a href="https://github.com/VHAINNOVATIONS/InfoButtons/blob/development/profilestore/{{localCloudProfile.name}}" target="_blank">
+                    <img src="{{localCloudProfile.imageUrl}}" style="max-height: 40px; max-width: 100px;">
+                    <img src="http://www.openinfobutton.org/_/rsrc/1290202364539/home/project_logo.jpg" style="max-height: 40px; max-width: 100px;" ng-hide="localCloudProfile.imageUrl">
+                </a>
+                <a class="btn navbar-btn orange glyphicon glyphicon-pencil" ng-click="editOids(localCloudProfile)"></a>
+                <br>
+                <a href="https://github.com/VHAINNOVATIONS/InfoButtons/blob/development/profilestore/{{localCloudProfile.name}}" target="_blank" class="btn btn-link">{{localCloudProfile.name | limitTo: localCloudProfile.name.length - 4}}</a>
+
+            </div>
+            <div class="col-md-3" style="margin-left: 2em;">
+                <p>{{localCloudProfile.profileDescription}}</p>
+            </div>
+            <div class="col-md-3" style="margin-left: 2em;">
+                <p><br>{{localCloudProfile.published | date:'medium'}}</p>
+            </div>
+            <div class="btn-group" role="group" aria-label="status">
+                <button type="button" class="btn btn-success" ng-click="updateStatus(localCloudProfile, 1)" ng-model="localCloudProfile.status" uib-btn-radio="1">Enabled</button>
+                <button type="button" class="btn btn-default" ng-click="updateStatus(localCloudProfile, 3)" ng-model="localCloudProfile.status" uib-btn-radio="3">Disabled</button>
+                <button type="button" class="btn btn-info" ng-click="updateStatus(localCloudProfile, 2)" ng-model="localCloudProfile.status" uib-btn-radio="2">Test</button>
+            </div>
+        </div>
+    </div>
+    <div class="well" ng-repeat="cloudProfileLink in cloudProfileLinks | orderBy: '-version' | filter:notInstalled(localCloudProfiles)">
+        <div class="row">
+            <div class="col-md-3">
+                <!--Suggest adding logos/images for each profile - see next line -->
+                <!--<img src="{{cloudProfileLink.image_url}}" alt="{{cloudProfileLink.title}} logo" style="max-height: 80px; max-width: 200px;">-->
+                <a href="https://github.com/VHAINNOVATIONS/InfoButtons/blob/development/profilestore/{{cloudProfileLink.title}}" target="_blank">
+                    <img src="{{cloudProfileLink.imgUrl}}" style="max-height: 40px; max-width: 100px;">
+                    <img src="http://www.openinfobutton.org/_/rsrc/1290202364539/home/project_logo.jpg" style="max-height: 40px; max-width: 100px;" ng-hide="cloudProfileLink.imgUrl">
+                </a> <br>
+                <a href="https://github.com/VHAINNOVATIONS/InfoButtons/blob/development/profilestore/{{cloudProfileLink.title}}" target="_blank" class="btn btn-link">{{cloudProfileLink.title | limitTo: cloudProfileLink.title.length - 4}}</a>
+            </div>
+            <div class="col-md-3" style="margin-left: 2em;">
+                <p>{{cloudProfileLink.profileDescription}}</p>
+            </div>
+            <div class="col-md-3" style="margin-left: 2em;">
+                <p><br>{{cloudProfileLink.version | date:'medium'}}</p>
+            </div>
+            <div class="">
+                <button ng-click="openModal(cloudProfileLink)" class="btn btn-primary">Download</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--<ul ng-controller="CloudProfileCtrl">-->
+    <!--<li ng-repeat="cloudProfileLink in cloudProfileLinks" class="thumbnail oibProfile-listing">-->
+        <!--<a href="#/oibProfile/{{cloudProfileLink.url}}">{{cloudProfileLink.name}}</a>-->
+    <!--</li>-->
+<!--</ul>-->

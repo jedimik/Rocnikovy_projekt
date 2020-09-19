@@ -1,0 +1,127 @@
+<style>
+    .container .btn {
+        margin-top: 25px;
+    }
+
+    .entry {
+        display:inline;
+    }
+
+    .entry.name {
+        position:absolute;
+        left:43%;
+    }
+
+    .alert {
+        margin-bottom: 0px;
+    }
+</style>
+<div class="container" ng-controller="setupController">
+    <div class="row">
+        <div class="col-md-6">
+            <h3>System Configuration</h3>
+            <hr/>
+            <form class="form" name="gitForm">
+                <div class="form-group">
+                    <div class="input-group">
+                        <label for="hostName">Server Host Name</label>
+                        <input type="text" class="form-control" id="hostName" name="hostPath" ng-model="hostName" required>
+                        <span class="input-group-btn">
+                            <button class='btn btn-default' type="submit" ng-click="setHostName(hostName)">Set</button>
+                        </span>
+                    </div>
+                    <div class="input-group">
+                        <label for="gitRepo">Git Repository Path</label>
+                        <input type="text" class="form-control" id="gitRepo" name="gitRepoPath" ng-model="gitRepo" placeholder="VHAINNOVATIONS/InfoButtons" required>
+                        <span class="input-group-btn">
+                            <button class='btn btn-default' type="submit" ng-click="setGitRepo(gitRepo)">Set</button>
+                        </span>
+                    </div>
+                    <div class="input-group">
+                        <label for="profilestore">Profile Store Path</label>
+                        <input type="text" class="form-control" id="profilestore" name="profilestorePath" ng-model="profilestore" placeholder="profilestore" required>
+                        <span class="input-group-btn">
+                            <button class='btn btn-default' type="submit" ng-click="setProfileStorePath(profilestore)">Set</button>
+                        </span>
+                    </div>
+                    <div class="input-group">
+                        <label for="gitUser">Git Username</label>
+                        <input type="text" class="form-control" id="gitUser" ng-disabled="true" value="{{gitUser}}">
+                        <span class="input-group-btn">
+                            <button class='btn btn-default' type="button" ng-click="changeGitUser()">Change</button>
+                        </span>
+                    </div>
+                    <div class="input-group">
+                        <label for="umlsUser">UMLS Username</label>
+                        <input type="text" class="form-control" id="umlsUser" ng-disabled="true" value="{{umlsUser}}">
+                        <span class="input-group-btn">
+                            <button class='btn btn-default' type="button" ng-click="changeUmlsUser()">Change</button>
+                        </span>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="col-md-8">
+            <h3>Profile Configuration</h3>
+            <hr/>
+            <form class="form-inline" name="oidForm" ng-submit="addOids(orgOid, orgName)">
+                <div class="form-group">
+                    <div class="input-group">
+                        <label for="orgOid">OID / DSN</label>
+                        <input type="text" pattern="\d+(\.\d+)*|^(http(s?)://)*(\w+\.)?\w+\.\w+" class="form-control" id="orgOid" name="orgOid" ng-model="orgOid" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="orgName">Organization's Name</label>
+                        <input type="text" class="form-control" id="orgName" ng-model="orgName" required>
+                        <span class="input-group-btn">
+                            <button class='btn btn-default' type="submit">Add</button>
+                        </span>
+                    </div>
+                    <uib-alert ng-repeat="oid in oids" type="info" close="deleteOid(oid.appPropertyId)">
+                        <div style="margin: 0 auto; position:relative;">
+                            <div class="entry">{{oid.propValue}}</div><div class="entry name">{{oid.propDescription}}</div>
+                        </div>
+                    </uib-alert>
+                </div>
+            </form>
+        </div>
+        <div ng-show="globals.currentUser.admin", class="col-md-8">
+            <h3>User Configuration</h3>
+            <hr/>
+            <form class="form-inline" name="usersForm" ng-submit="addUser(username, password)">
+                <div class="form-group">
+                    <div class="input-group">
+                        <label for="username">Username</label>
+                        <input type="text" class="form-control" id="username" name="username" ng-model="username" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="password">Password</label>
+                        <input type="text" class="form-control" id="password" name="password" ng-model="password" required>
+                        <span class="input-group-btn">
+                            <button class='btn btn-default' type="submit">Add</button>
+                        </span>
+                    </div>
+                    <uib-alert ng-repeat="user in users" type="warning" close="deleteUser(user)">
+                        {{user.username}}
+                    </uib-alert>
+                </div>
+            </form>
+            <h3>Update Admin User</h3>
+            <form class="form-inline" name="usersForm" ng-submit="updateAdminUser(adminUsername, adminPassword)">
+                <div class="form-group">
+                    <div class="input-group">
+                        <label for="username">Username</label>
+                        <input type="text" class="form-control" id="adminUsername" name="adminUsername" ng-model="adminUsername" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="password">Password</label>
+                        <input type="text" class="form-control" id="adminPassword" name="adminPassword" ng-model="adminPassword" required>
+                        <span class="input-group-btn">
+                            <button class='btn btn-default' type="submit">Change</button>
+                        </span>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

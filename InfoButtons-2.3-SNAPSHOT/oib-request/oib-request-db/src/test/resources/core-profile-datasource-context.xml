@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	   xmlns:tx="http://www.springframework.org/schema/tx"
+	   xsi:schemaLocation="
+	http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context.xsd
+	http://www.springframework.org/schema/tx
+	http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+	<!-- =========================================== -->
+	<!-- Annotation configuration                    -->
+	<!-- =========================================== -->
+
+	<context:annotation-config />
+
+	<!-- =========================================== -->
+	<!-- Data Layer                                  -->
+	<!-- =========================================== -->
+
+	
+	<!--
+		Data source: reads a properties file and injects them into a DBCP DS
+		Second datasource for Resource Profiles
+	-->
+	<bean id="profiledataSource" name="profiledataSource" class="org.apache.tomcat.jdbc.pool.DataSource">
+		<property name="driverClassName">
+			<value>${datasource2.driver}</value>
+		</property>
+		<property name="url">
+			<value>${datasource2.url}</value>
+		</property>
+		<property name="username">
+			<value>${datasource2.user}</value>
+		</property>
+		<property name="password">
+			<value>${datasource2.password}</value>
+		</property>
+		<property name="testWhileIdle">
+			<value>true</value>
+		</property>
+	</bean>
+	
+
+	
+
+<!-- Session factory -->
+	<!-- Session Factory for the second datasource-->
+	<bean id="profilesessionFactory" name="profilesessionFactory"
+		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+		<property name="dataSource" ref="profiledataSource" />
+
+		<!--
+			Hibernate configuration properties (read from a properties file)
+		-->
+		<property name="hibernateProperties">
+			<map>
+				<entry key="hibernate.show_sql" value="false"/>
+				<entry key="hibernate.default_schema" value="resource_profile" />
+				<entry key="hibernate.hbm2ddl.auto" value="validate" />
+			</map>
+		</property>
+
+		<!-- Using improved naming strategy -->
+		<property name="namingStrategy">
+			<bean class="org.hibernate.cfg.DefaultNamingStrategy" />
+		</property>
+
+		<!-- Mapping annotated classes using search patterns -->
+		<property name="packagesToScan">
+			<list>
+				<value><![CDATA[org.openinfobutton.profiledb.domain]]></value>
+				<value><![CDATA[org.openinfobutton.oibpropertydb.domain]]></value>
+				<value><![CDATA[org.openinfobutton.liteprofiledb.domain]]></value>
+			</list>
+		</property>
+	</bean>
+
+<!-- 	Hibernate data access template -->
+	<bean id="profilehibernateTemplate" class="org.springframework.orm.hibernate4.HibernateTemplate">
+		<property name="sessionFactory" ref="profilesessionFactory" />
+	</bean>
+
+	<!-- SimpleJdbcTemplate for use in testing -->
+	<bean id="profileJdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+		<constructor-arg index="0" ref="profiledataSource" />
+	</bean>
+
+	<!-- =========================================== -->
+	<!-- Transaction management                      -->
+	<!-- =========================================== -->
+
+	<!--
+		Enable the configuration of transactional behavior based on
+		annotations
+	-->
+	<tx:annotation-driven />
+
+	<!-- a PlatformTransactionManager is still required -->
+	<bean id="transactionManager"
+		class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+		<property name="sessionFactory" ref="profilesessionFactory" />
+	</bean>
+	
+</beans>

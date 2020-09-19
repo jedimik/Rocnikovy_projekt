@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="
+	http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context.xsd
+	">
+
+	<!-- =========================================== -->
+	<!-- Properties files -->
+	<!-- =========================================== -->
+
+	<!-- Property file locations -->
+	<!-- <context:property-placeholder location="classpath*:*-.properties" /> -->
+
+	<bean id="propertyConfigurer"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="location" value="/serviceParams.properties" />
+	</bean>
+	<!-- =========================================== -->
+	<!-- Annotation configuration -->
+	<!-- =========================================== -->
+
+	<context:annotation-config />
+
+	<context:component-scan base-package="org.openinfobutton.subsetdb.service" />
+	<context:component-scan base-package="org.openinfobutton.profiledb.service" />
+	<context:component-scan base-package="org.openinfobutton.rest.terminology.impl" />
+	<context:component-scan base-package="org.openinfobutton.externalresource.implementation" />
+	<context:component-scan base-package="org.openinfobutton.valuset.matcher.impl.cloud" />
+	<bean id="externalSet" class="${service.MatchExternalSetClassName}" />
+
+	<context:spring-configured />
+</beans>

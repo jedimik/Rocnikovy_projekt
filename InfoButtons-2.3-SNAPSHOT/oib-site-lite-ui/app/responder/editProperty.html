@@ -1,0 +1,68 @@
+<div class="modal-header">
+    <h3 class="modal-title">Add/Edit Asset Property</h3>
+</div>
+<div class="modal-body">
+    <div class="form">
+        <div class="form-group">
+            <ui-select ng-model="selected.property" on-select="clearSelectedCodes()">
+                <ui-select-match placeholder="Select Property...">{{$select.selected.propName}}</ui-select-match>
+                <ui-select-choices repeat = "property in properties | orderBy : 'name' | filter : $select.search track by property.name" >
+                    <div ng-bind-html = "property.name | highlight: $select.search"></div>
+                </ui-select-choices>
+            </ui-select>
+        </div>
+        <div class="form-group" ng-if="selected.property.propName == 'mainSearchCriteria.v'">
+            <ui-select ng-model="selected.property.codeSystem">
+                <ui-select-match placeholder="Select Code System...">{{$select.selected.name}}</ui-select-match>
+                <ui-select-choices repeat = "codeSystem in $select.selected | orderBy : 'name' | filter : $select.search track by codeSystem.name">
+                    <div ng-bind-html = "codeSystem.name | highlight: $select.search"></div>
+                </ui-select-choices>
+            </ui-select>
+        </div>
+
+
+
+        <div class="form-group" ng-if="selected.property.propName != 'performer.languageCode.c' && selected.property.propName != 'informationRecipient.languageCode.c' &&
+                                selected.property.propName != 'locationOfInterest.c' && selected.property.propName != 'mainSearchCriteria.v'">
+
+        <dropdown-multiselect model="selected_items" options="selected.property.codes"></dropdown-multiselect>
+            <div ng-repeat="item in selected_items track by item.id">
+                {{item.displayName}}
+            </div>
+        </div>
+        <!--
+            <ui-select ng-model="selected.property.codes">
+                <ui-select-match placeholder="Select Code...">{{$select.selected.displayName}}</ui-select-match>
+                <ui-select-choices repeat = "code in $select.selected | orderBy : 'displayName' | filter : $select.search track by code.displayName">
+                    <div ng-bind-html = "code.displayName | highlight: $select.search"></div>
+                </ui-select-choices>
+            </ui-select>
+        </div>
+        -->
+
+
+        <div ng-if="selected.property.propName == 'performer.languageCode.c' || selected.property.propName == 'informationRecipient.languageCode.c' ||
+                            selected.property.propName == 'locationOfInterest.c' || selected.property.propName == 'mainSearchCriteria.v'"
+                            class="input-group">
+            <label for="displayName">Display Name</label>
+            <input type="text" typeahead-on-select="onSelect($item, $model, $label)" placeholder="Concepts load as you type...."
+                   uib-typeahead = "term as term.name for term in getTerms($viewValue, selected.property.codeSystem.name)"
+                   typeahead-loading="loadingTerms" typeahead-no-results="noResults" class="form-control" id="displayName"
+                   typeahead-min-length="4" ng-model="selected.property.codes.displayName" required>
+            <i ng-show="loadingTerms" class="glyphicon glyphicon-refresh"></i>
+            <div ng-show="noResults">
+                <i class="glyphicon glyphicon-remove"></i> No Results Found
+            </div>
+        </div>
+        <div ng-if="selected.property.propName == 'performer.languageCode.c' || selected.property.propName == 'informationRecipient.languageCode.c' ||
+                            selected.property.propName == 'locationOfInterest.c' || selected.property.propName == 'mainSearchCriteria.v'"
+                            class="input-group">
+            <label for="code">Code</label>
+            <input type="text" class="form-control" id="code" ng-model="selected.property.codes.code" required>
+        </div>
+    </div>
+    <button type="submit" class="btn btn-primary" ng-click="editProperty(selected.property, selected_items)">Submit</button>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-warning" ng-click="$dismiss()">Cancel</button>
+</div>
